@@ -12,12 +12,17 @@ from typing import Dict
 
 from flask import request, session as flask_session
 from flask_socketio import emit, disconnect
+from flask import Blueprint
+terminal_bp = Blueprint("terminal", __name__)
 
 from app import socketio
 
 # Keep a map from socket sid -> pty master FD and child PID
 _PTY_SESSIONS: Dict[str, Dict] = {}
 
+@terminal_bp.route("/terminal")
+def terminal_page():
+    return "Terminal WebSocket endpoint is active."
 
 @socketio.on('connect', namespace='/terminal')
 def on_connect():
