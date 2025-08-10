@@ -61,6 +61,8 @@ def create_app(config_object: Optional[dict] = None) -> Flask:
 
 # If you want to run with `python -m app` during dev, provide a minimal runner
 if __name__ == "__main__":
+    if not hasattr(app, "session_cookie_name"):
+        app.session_cookie_name = app.config.get("SESSION_COOKIE_NAME", "session")
     app = create_app()
     # For development only. Use socketio.run to enable websocket support.
     socketio.run(app, host="0.0.0.0", port=5000, debug=True)
