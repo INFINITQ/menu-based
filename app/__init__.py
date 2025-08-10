@@ -16,25 +16,23 @@ server_session: Session = Session()
 
 
 def create_app(config_object: Optional[dict] = None) -> Flask:
-    """Create and configure the Flask application.
-
-    Reads configuration from environment variables when available. Keeps
-    defaults sensible for local development on RHEL 9.6.
-    """
+    """Create and configure the Flask application."""
     app = Flask(__name__, static_folder="static", template_folder="templates")
 
-    # Basic config — for production you should override with environment variables
+    if not hasattr(app, "session_cookie_name"):
+        app.session_cookie_name = app.config.get("SESSION_COOKIE_NAME", "session")
+
+    # Basic config
     app.config.setdefault("SECRET_KEY", os.environ.get("SECRET_KEY", "super-secret-dev-key"))
-    # Server-side session storage (filesystem) for simplicity
     app.config.setdefault("SESSION_TYPE", os.environ.get("SESSION_TYPE", "filesystem"))
     app.config.setdefault("SESSION_COOKIE_HTTPONLY", True)
     app.config.setdefault("SESSION_COOKIE_SAMESITE", "Lax")
 
-    # Register extensions
+    # Extensions
     server_session.init_app(app)
     socketio.init_app(app, cors_allowed_origins="*")
 
-    # Import and register blueprints
+    # Blueprints
     from app.auth import auth_bp
     from app.routes.dashboard import dashboard_bp
     from app.routes.terminal_ws import terminal_bp
@@ -51,7 +49,6 @@ def create_app(config_object: Optional[dict] = None) -> Flask:
     app.register_blueprint(social_bp, url_prefix="/api/social")
     app.register_blueprint(js_bp, url_prefix="/api/js")
 
-    # Simple health check
     @app.route("/healthz")
     def _healthz():
         return "ok", 200
@@ -59,10 +56,6 @@ def create_app(config_object: Optional[dict] = None) -> Flask:
     return app
 
 
-# If you want to run with `python -m app` during dev, provide a minimal runner
 if __name__ == "__main__":
-    if not hasattr(app, "session_cookie_name"):
-        app.session_cookie_name = app.config.get("SESSION_COOKIE_NAME", "session")
     app = create_app()
-    # For development only. Use socketio.run to enable websocket support.
     socketio.run(app, host="0.0.0.0", port=5000, debug=True)
