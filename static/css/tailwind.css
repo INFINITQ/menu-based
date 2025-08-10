@@ -1,0 +1,40 @@
+/* static/css/tailwind.css - minimal helper classes used in templates */
+:root{--accent:#85BCB1;--primary:#2C6485;--muted:#D3E9D3}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,'Helvetica Neue',Arial}
+.min-h-screen{min-height:100vh}
+.bg-gray-50{background:#f9fafb}
+.text-gray-900{color:#111827}
+.font-sans{font-family:Inter, sans-serif}
+.flex{display:flex}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.p-4{padding:1rem}
+.p-6{padding:1.5rem}
+.p-3{padding:.75rem}
+.p-2{padding:.5rem}
+.mt-2{margin-top:.5rem}
+.mt-20{margin-top:5rem}
+.mb-2{margin-bottom:.5rem}
+.mb-4{margin-bottom:1rem}
+.mr-2{margin-right:.5rem}
+.rounded{border-radius:.5rem}
+.text-xl{font-size:1.25rem}
+.font-semibold{font-weight:600}
+.text-lg{font-size:1.125rem}
+.bg-emerald-600{background:#10b981}
+.bg-blue-700{background:#1d4ed8}
+.bg-indigo-600{background:#4f46e5}
+.bg-red-600{background:#dc2626}
+.bg-yellow-600{background:#d97706}
+.text-white{color:#fff}
+.w-64{width:16rem}
+.hidden{display:none}
+.md\:block{display:block}
+.max-w-md{max-width:28rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.bg-white{background:#fff}
+.card{background:var(--muted); border-radius:12px; padding:1rem}
+.text-sm{font-size:.875rem}
+
+/* terminal container sizing */
+#terminal-container{height:100%;}

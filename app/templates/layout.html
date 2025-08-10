@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title if title else 'Mega Tool' }}</title>
+    <!-- Tailwind compiled CSS (local) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
+    <!-- xterm.js CSS (CDN) -->
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
+    <style>
+      .nav-bg { background: #2C6485; }
+      .accent { color: #85BCB1; }
+      .card { background: #D3E9D3; border-radius: 12px; padding: 1rem; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-50 text-gray-900 font-sans">
+
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 nav-bg text-white p-4 hidden md:block">
+        <h2 class="text-xl font-bold mb-4">
+          <a href="{{ url_for('dashboard.index') }}" class="hover:underline">Mega Tool</a>
+        </h2>
+        <nav class="space-y-2">
+          <a class="block py-2 px-3 rounded hover:bg-opacity-10" href="{{ url_for('dashboard.index') }}">Dashboard</a>
+          <a class="block py-2 px-3 rounded hover:bg-opacity-10" href="{{ url_for('dashboard.docker_ui') }}">Docker</a>
+          <a class="block py-2 px-3 rounded hover:bg-opacity-10" href="{{ url_for('dashboard.terminal_ui') }}">Terminal</a>
+        </nav>
+        <div class="mt-6">
+          <a class="inline-block bg-white text-blue-800 px-3 py-1 rounded" href="{{ url_for('auth.logout') }}">Logout</a>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="flex-1 p-6">
+        <header class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl font-semibold">{{ title if title else 'Dashboard' }}</h1>
+          <div>Signed in as <strong>{{ user }}</strong></div>
+        </header>
+
+        <section>
+          {% include 'partials/flash_messages.html' %}
+          {% block content %}{% endblock %}
+        </section>
+      </main>
+    </div>
+
+    <!-- xterm & socket.io & small app script -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

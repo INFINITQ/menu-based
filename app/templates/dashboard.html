@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <a href="{{ url_for('dashboard.docker_ui') }}" class="card hover:shadow-lg transition">
+    <h2 class="text-xl font-bold mb-2">Docker Management</h2>
+    <p>View, start, stop, and manage your Docker containers.</p>
+  </a>
+  <a href="{{ url_for('dashboard.terminal_ui') }}" class="card hover:shadow-lg transition">
+    <h2 class="text-xl font-bold mb-2">Web Terminal</h2>
+    <p>Run commands directly in your browser terminal.</p>
+  </a>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="mb-4">
+  <h2 class="text-lg font-semibold">Web Terminal</h2>
+</div>
+<div id="terminal" class="bg-black text-white h-96 rounded"></div>
+<script>
+const socket = io('/terminal');
+let term = null;
+
+socket.on('connected', ()=> { console.log('connected to terminal'); });
+
+// When server confirms PTY started, create xterm instance (if not already)
+socket.on('pty_started', ()=> {
+  if (term) return;
+  term = new Terminal();
+  term.open(document.getElementById('terminal'));
+  term.onData(data => {
+    socket.emit('pty_input', { data });
+  });
+  // send initial size
+  socket.emit('resize', { cols: term.cols, rows: term.rows });
+});
+
+// pty output from server
+socket.on('pty_output', (msg) => {
+  if (term) term.write(msg.data);
+});
+
+// optional manual start button — otherwise you may emit start_shell on connect
+document.addEventListener('DOMContentLoaded', () => {
+  // start right away
+  socket.emit('start_shell', {});
+});
+
+// handle window resize
+window.addEventListener('resize', () => {
+  if (!term) return;
+  socket.emit('resize', { cols: term.cols, rows: term.rows });
+});
+</script>
+
+{% endblock %}

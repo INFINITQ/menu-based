@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="mb-4">
+  <h2 class="text-lg font-semibold">Docker Containers</h2>
+</div>
+<div id="docker-container-list" class="space-y-4">
+  <!-- JS will populate this via API -->
+  <p>Loading containers...</p>
+</div>
+<script>
+async function loadDockerContainers() {
+  const res = await fetch('/api/docker/containers?all=true');
+  const data = await res.json();
+  const containerList = document.getElementById('docker-container-list');
+  containerList.innerHTML = '';
+  if (!data || data.length === 0) {
+    containerList.innerHTML = '<p>No containers found.</p>';
+    return;
+  }
+  data.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'p-4 bg-white rounded shadow flex justify-between items-center';
+    div.innerHTML = `
+      <div>
+        <strong>${c.name}</strong> (${c.status})
+      </div>
+      <div class="space-x-2">
+        <button onclick="dockerAction('${c.name}', 'start')" class="bg-green-500 text-white px-2 py-1 rounded">Start</button>
+        <button onclick="dockerAction('${c.name}', 'stop')" class="bg-yellow-500 text-white px-2 py-1 rounded">Stop</button>
+        <button onclick="dockerAction('${c.name}', 'remove')" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+      </div>
+    `;
+    containerList.appendChild(div);
+  });
+}
+
+async function dockerAction(name, action) {
+  let path = '/api/docker/start';
+  if (action === 'stop') path = '/api/docker/stop';
+  if (action === 'remove') path = '/api/docker/rm';
+  await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name })
+  });
+  loadDockerContainers();
+}
+
+loadDockerContainers();
+</script>
+
+{% endblock %}
